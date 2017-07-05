@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/everyoo/Movies/Code/fifo/lock_set.c
+unistd.h
+-
+sys/types.h
+-
+fcntl.h
+-
+stdio.h
+-
+
+/Users/everyoo/Movies/Code/fifo/lock_set.h
+
+/Users/everyoo/Movies/Code/fifo/producer.c
+stdio.h
+-
+unistd.h
+-
+stdlib.h
+-
+string.h
+-
+fcntl.h
+-
+lock_set.h
+/Users/everyoo/Movies/Code/fifo/lock_set.h
+

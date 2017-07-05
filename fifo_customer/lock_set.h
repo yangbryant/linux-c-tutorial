@@ -1,0 +1,1 @@
+int lock_set(int fd, int type);

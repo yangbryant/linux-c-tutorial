@@ -1,0 +1,6 @@
+/Users/everyoo/Movies/Code/com_host/CMakeFiles/rebuild_cache.dir
+/Users/everyoo/Movies/Code/com_host/CMakeFiles/edit_cache.dir
+/Users/everyoo/Movies/Code/com_host/CMakeFiles/com_host.dir
+/Users/everyoo/Movies/Code/com_host/set_com_config/CMakeFiles/rebuild_cache.dir
+/Users/everyoo/Movies/Code/com_host/set_com_config/CMakeFiles/edit_cache.dir
+/Users/everyoo/Movies/Code/com_host/set_com_config/CMakeFiles/set_com_config.dir

@@ -1,0 +1,3 @@
+/Users/everyoo/Movies/Code/dir/CMakeFiles/rebuild_cache.dir
+/Users/everyoo/Movies/Code/dir/CMakeFiles/edit_cache.dir
+/Users/everyoo/Movies/Code/dir/CMakeFiles/dir.dir

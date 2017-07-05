@@ -1,0 +1,13 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUFFER_SIZE	com_read.c	21;"	d	file:
+HOST_COM_PORE	com_read.c	22;"	d	file:
+MAX_COM_NUM	uart_api.c	25;"	d	file:
+_UART_API_H_	uart_api.h	2;"	d
+main	com_read.c	/^int main(void)$/;"	f
+open_port	uart_api.c	/^int open_port(int com_port)$/;"	f
+set_com_config	uart_api.c	/^int set_com_config(int fd,int baud_rate,int data_bits,char parity,int stop_bits)$/;"	f

@@ -1,0 +1,3 @@
+/home/sushuai/work/cross/learn2.0/read_serial/build/CMakeFiles/rebuild_cache.dir
+/home/sushuai/work/cross/learn2.0/read_serial/build/CMakeFiles/edit_cache.dir
+/home/sushuai/work/cross/learn2.0/read_serial/build/CMakeFiles/com_read.dir

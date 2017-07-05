@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/everyoo/Movies/Code/com_host/com_host.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+sys/types.h
+-
+sys/stat.h
+-
+errno.h
+-
+unistd.h
+-
+fcntl.h
+-
+set_com_config/set_com_config.h
+/Users/everyoo/Movies/Code/com_host/set_com_config/set_com_config.h
+
+/Users/everyoo/Movies/Code/com_host/set_com_config/set_com_config.h
+

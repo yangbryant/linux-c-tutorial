@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/com_read.dir/com_read.c.o CMakeFiles/com_read.dir/uart_api.c.o  -o com_read -rdynamic 

@@ -1,0 +1,359 @@
+wnet);
+}
+
+static void hl_node_control(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jDevopt = json_object_object_get(jObj, DEVICE_OPT);
+	json_object *jAddr = json_object_object_get(jDevopt, "addr");
+	json_object *jCmd = json_object_object_get(jDevopt, "cmd");
+	json_object *jValue = json_object_object_get(jDevopt, "value");
+
+	if ((jAddr == NULL) || (jCmd == NULL) || (jValue == NULL)) {
+		printf("Check hl_node_control:jAddr=%p, jCmd=%p, jValue=%p\n", jAddr, jCmd, jValue);
+		return;
+	}
+	int addr = json_object_get_int(jAddr);
+	int command = json_object_get_int(jCmd);
+	int value = json_object_get_int(jValue);
+
+	unsigned char zcmdc = (unsigned char)(command >> 8);
+	unsigned char zcmd = (unsigned char)command;
+	unsigned char znodeid = (unsigned char)(addr >> 8);
+	unsigned char endpoint = (unsigned char)(addr);
+	
+	printf("zcmdc=%02x, zcmd=%02x, znodeid=%02x, endpoint=%02x\n", zcmdc, zcmd, znodeid, endpoint);
+	switch(zcmdc) {
+		case COMMAND_CLASS_BASIC: 
+			send_basic_set_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, value); 
+			break;
+
+		case COMMAND_CLASS_SWITCH_BINARY:
+			send_switch_binary_set_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, value);
+			break;
+
+		case COMMAND_CLASS_DOOR_LOCK:
+			send_doorlock_set_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, value);
+			break;
+
+		case COMMAND_CLASS_SWITCH_MULTILEVEL:
+			if (zcmd == SWITCH_MULTILEVEL_SET) {
+				send_level_set_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, value);
+			}
+			else if (zcmd == SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE) {
+				send_level_stop_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
+static void hl_node_state_get(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jDevopt = json_object_object_get(jObj, DEVICE_OPT);
+	json_object *jAddr = json_object_object_get(jDevopt, "addr");
+	json_object *jCmd = json_object_object_get(jDevopt, "cmd");
+	json_object *jValue = json_object_object_get(jDevopt, "value");
+
+	if ((jAddr == NULL) || (jCmd == NULL)) {
+		printf("Check hl_node_control:jAddr=%p, jCmd=%p\n", jAddr, jCmd);
+		return;
+	}
+	int addr = json_object_get_int(jAddr);
+	int command = json_object_get_int(jCmd);
+
+	unsigned char zcmdc = (unsigned char)(command >> 8);
+	unsigned char zcmd = (unsigned char)command;
+	unsigned char znodeid = (unsigned char)(addr >> 8);
+	unsigned char endpoint = (unsigned char)(addr);
+
+	printf("zcmdc=%02x, zcmd=%02x, znodeid=%02x, endpoint=%02x\n", zcmdc, zcmd, znodeid, endpoint);
+	switch(zcmdc) {
+		case COMMAND_CLASS_BASIC:
+			if (zcmd == BASIC_GET) {
+				send_basic_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		case COMMAND_CLASS_SWITCH_BINARY:
+			if (zcmd == SWITCH_BINARY_GET) {
+				send_switch_binary_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		case COMMAND_CLASS_SENSOR_BINARY:
+			if ((zcmd == SENSOR_BINARY_GET) && (jValue != NULL)) {
+				int value = json_object_get_int(jValue);
+				unsigned char attr = (unsigned char)value;
+				send_sensor_binary_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, attr);
+			}
+			break;
+
+		case COMMAND_CLASS_SENSOR_ALARM:
+			break;
+
+		case COMMAND_CLASS_BATTERY:
+			if (zcmd == BATTERY_GET) {
+				send_battery_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		case COMMAND_CLASS_METER:
+			break;
+
+		case COMMAND_CLASS_DOOR_LOCK:
+			if (zcmd == DOOR_LOCK_OPERATION_GET) {
+				send_dlck_op_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		case COMMAND_CLASS_SENSOR_MULTILEVEL:
+			if ((zcmd == SENSOR_MULTILEVEL_GET) && (jValue != NULL)) {
+				int value = json_object_get_int(jValue);
+				unsigned char attr = (unsigned char)value;
+				send_sensor_level_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint, attr);
+			}
+			break;
+
+		case COMMAND_CLASS_SWITCH_MULTILEVEL:
+			if (zcmd == SWITCH_MULTILEVEL_GET) {
+				send_level_get_by_nodeid_endpint(hl_appl->zwnet, znodeid, endpoint);
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
+static void hl_node_dump(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jDevopt = json_object_object_get(jObj, DEVICE_OPT);
+	json_object *jAddr = json_object_object_get(jDevopt, "addr");
+
+	if ((jAddr == NULL)) {
+		printf("Check hl_node_control:jAddr=%p\n", jAddr);
+		return;
+	}
+	int addr = json_object_get_int(jAddr);
+
+	unsigned char znodeid = (unsigned char)(addr >> 8);
+	unsigned char endpoint = (unsigned char)(addr);
+	
+	hl_nw_new_node_parse_by_nodeid(hl_appl, znodeid);	
+	return 0;
+}
+
+static void hl_node_list_get(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jDevopt = json_object_object_get(jObj, DEVICE_OPT);
+	json_object *jCmd = json_object_object_get(jDevopt, "cmd");
+	int curops = 0;
+
+	if (jCmd== NULL) {
+		printf("Json message need msg->value->int \n");
+		return -1;
+	}
+	curops = json_object_get_int(jCmd);
+	if (curops == 1) {
+		hl_nw_alldevices_node_list(hl_appl);
+	}
+}
+
+static void hl_net_test_func(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jDevopt = json_object_object_get(jObj, DEVICE_OPT);
+	json_object *jAddr = json_object_object_get(jDevopt, "addr");
+
+	if ((jAddr == NULL)) {
+		printf("Check hl_node_control:jAddr=%p\n", jAddr);
+		return;
+	}
+	int addr = json_object_get_int(jAddr);
+	zwifd_t intf;
+
+	unsigned char znodeid = (unsigned char)(addr >> 8);
+	unsigned char endpoint = (unsigned char)(addr);
+	
+	int result;
+	result =  zwnet_get_if_by_id(hl_appl->zwnet, znodeid, endpoint, COMMAND_CLASS_BASIC, &intf);
+	if (result == 0) {
+		printf("----------------------------------->Found znodeid[%d] endpoint[%d]\n", znodeid, endpoint);
+	} else {
+		printf("Unfound nodeid[%d] endpoint[%d]\n", znodeid, endpoint);
+		return;
+	}
+	zwif_basic_get(&intf, ZWIF_GET_BMSK_CACHE);
+}
+static void process_one_zwave_json_command(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	printf("zwave json object process:\n");
+	printf("%s\n", json_object_to_json_string(jObj));
+	json_object *jtype = json_object_object_get(jObj, "type"); 
+	if (jtype == NULL) return;	
+
+	switch(json_object_get_int(jtype)) {
+		case MQTT_ZWAVE_COMMAND_TYPE_EXCLUSION:
+			hl_rm_node(hl_appl, jObj);	
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_INCLUSION:
+			hl_add_node(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_CONTROL:
+			hl_node_control(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_STATE_GET:
+			hl_node_state_get(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_JOIN_OTHER_NETWORK:
+			hl_net_join_other_network(hl_appl, jObj);
+			break;
+		case MQTT_ZWAVE_COMMAND_TYPE_DUMP_NODE:
+			hl_node_dump(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_GET_DEVLIST:
+			hl_node_list_get(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_RESET_NETWORK:
+			hl_net_reset(hl_appl, jObj);
+			break;
+
+		case MQTT_ZWAVE_COMMAND_TYPE_TEST:
+			hl_net_test_func(hl_appl, jObj);
+			break;
+
+		default:
+			break;
+	}
+	return;
+}
+static void process_one_common_json_command(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	json_object *jtype = json_object_object_get(jObj, "type");  
+	if (jtype == NULL) return;
+
+	printf("jtype=%d\n", json_object_get_int(jtype));
+	switch(json_object_get_int(jtype)) {
+		case MQTT_JSON_PROTOCAL_ANY_TYPE_SCENE:
+			process_one_scene_command(hl_appl->gClient, jObj);
+			break;
+
+		case MQTT_JSON_PROTOCAL_ANY_TYPE_LINKAGE:
+			process_one_linkage_command(hl_appl->gClient, jObj);
+			break;
+		default:
+			break;
+	}
+}
+static void process_one_json_command(hl_appl_ctx_t *hl_appl, json_object *jObj)
+{
+	printf("Got one json command\n");
+	printf("%s\n", json_object_to_json_string(jObj));
+	json_object *jprotocal = json_object_object_get(jObj, "protocal");
+
+	if (jprotocal == NULL) return;
+	switch(json_object_get_int(jprotocal)) {
+		case MQTT_JSON_PROTOCAL_ZWAVE_ID:
+			printf("start to process zwave json command:--->\n");
+			process_one_zwave_json_command(hl_appl, jObj);
+			printf("<---:end json command\n");
+			break;
+		
+		case MQTT_JSON_PROTOCAL_ANY:
+			printf("Common protocal command\n");
+			process_one_common_json_command(hl_appl, jObj);
+			break;
+
+		deafault:
+			break;
+	}
+}
+
+static void *zwave_mqtt_thread_func(void *data)
+{
+	hl_appl_ctx_t  *hl_appl = (hl_appl_ctx_t *)data;
+	struct Global_Client *gClient = hl_appl->gClient;
+	json_object *jObj = NULL;
+	
+	gClient->mqttCmdThreadRun = TRUE;
+	while(!gClient->mqttCmdThreadExit) {
+		g_mutex_lock(&gClient->MqttCmdMutex);
+		while((g_slist_length(gClient->pMqttCmdList) == 0) && !gClient->mqttCmdThreadExit) 
+			g_cond_wait(&gClient->MqttCmdCond, &gClient->MqttCmdMutex);
+		jObj = g_slist_nth_data(gClient->pMqttCmdList, 0);
+		if (jObj != NULL) {
+			gClient->pMqttCmdList = g_slist_remove(gClient->pMqttCmdList, jObj);
+		}
+		g_mutex_unlock(&gClient->MqttCmdMutex);
+		if (gClient->mqttCmdThreadExit) {
+			break;
+		}
+		if (jObj == NULL) continue;
+
+		//process one json object
+		process_one_json_command(hl_appl, jObj);
+		json_object_put(jObj);
+	}
+	gClient->mqttCmdThreadRun = FALSE;
+	return NULL;
+}
+/**
+  nw_init - initialization network
+  @param[in] hl_appl   user application context
+  @return  0 on success; otherwise negative number
+  */
+int nw_init(struct Global_Client *pClient)
+{
+	int             ret;
+	uint8_t         zip_gw_ip[16];              ///< Z/IP gateway address in IPv4 or IPv6
+
+	hl_appl_ctx_t *hl_appl = &g_appl_ctx;
+
+	hl_appl->node_status = ADD_NODE_STS_DONE;	
+	hl_appl->addnodetimer = 0;
+	g_appl_ctx.gClient = pClient;   
+
+	ret = zwnet_ip_aton("fd00:aaaa::3", zip_gw_ip, &hl_appl->use_ipv4);
+
+	if (ret != 0)
+	{
+		return ZW_ERR_IP_ADDR;
+	}
+
+	ret = lib_init(hl_appl, 4123, zip_gw_ip, hl_appl->use_ipv4, "/etc/config/zwave/zwave_device_rec.txt",
+			NULL, 0, "/etc/zwave/");
+
+	if (ret < 0)
+	{
+		printf("lib_init with error: %d\n", ret);
+	}
+
+	//create one thread for execute mqtt command
+	pClient->mqttCmdThreadExit = FALSE;
+	pClient->mqttCmdThreadRun = FALSE;
+	pClient->pMqttCmdThread = g_thread_new("mqttcmd", zwave_mqtt_thread_func, (void*)hl_appl); 
+	while(!pClient->mqttCmdThreadRun) {
+		g_usleep(1000);
+	}
+	return ret;
+}
+
+int nw_deinit(hl_appl_ctx_t *hl_appl) 
+{
+	struct Global_Client *pClient = hl_appl->gClient;
+
+	pClient->mqttCmdThreadExit = TRUE;
+	g_cond_signal(&pClient->MqttCmdCond);
+	while(pClient->mqttCmdThreadRun) {
+		g_usleep(1000);
+	}
+	zwnet_exit(hl_appl->zwnet);
+	return 0;
+}

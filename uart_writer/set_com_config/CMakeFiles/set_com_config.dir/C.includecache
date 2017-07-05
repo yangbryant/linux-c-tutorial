@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/everyoo/Movies/Code/uart_writer/set_com_config/set_com_config.c
+termios.h
+-
+stdio.h
+-
+unistd.h
+-
+stdlib.h
+-
+string.h
+-
+fcntl.h
+-
+

@@ -1,0 +1,3 @@
+/Users/everyoo/Movies/Code/fifo/CMakeFiles/rebuild_cache.dir
+/Users/everyoo/Movies/Code/fifo/CMakeFiles/edit_cache.dir
+/Users/everyoo/Movies/Code/fifo/CMakeFiles/fifo_producer.dir
