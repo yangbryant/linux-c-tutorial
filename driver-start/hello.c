@@ -62,6 +62,11 @@ static void __exit total_symbols_exit(void)
     printk("<1>Total symbols module exit!");
 }
 
+/**
+ ** 查看结果
+ ** cat /var/log/messages | tail
+ **/
+
 module_init(total_symbols_init);
 module_exit(total_symbols_exit);
 module_param(symbol_type, uint, S_IRUGO);
