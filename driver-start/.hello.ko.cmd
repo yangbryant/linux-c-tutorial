@@ -1,0 +1,1 @@
+cmd_/home/srefan/Code/linux-c-tutorial/driver-start/hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/srefan/Code/linux-c-tutorial/driver-start/hello.ko /home/srefan/Code/linux-c-tutorial/driver-start/hello.o /home/srefan/Code/linux-c-tutorial/driver-start/hello.mod.o
