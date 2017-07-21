@@ -1,0 +1,3 @@
+Program('getaddr', 'getaddrinfo.c')
+Program('server', 'server.c')
+Program('client', 'client.c')
