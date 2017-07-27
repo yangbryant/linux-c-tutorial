@@ -65,11 +65,31 @@ int main()
     while(1)
     {
         sin_size = sizeof(struct sockaddr_in);
+
+#if 1
+        do {
+            if (!((client_fd = accept(sockfd, (struct sockaddr *)&client_sockaddr, &sin_size)) < 0))
+            {
+                break;
+            }
+
+            if (errno == EAGAIN)
+            {
+                printf("Resource temporarily unavailable\n");
+                sleep(1);
+            }
+            else {
+                printf("accept error!\n");
+                exit(1);
+            }
+        } while (1);
+#else
         if ((client_fd = accept(sockfd, (struct sockaddr *) &client_sockaddr, &sin_size)) < 0)
         {
             printf("accept\n");
             exit(1);
         }
+#endif
         if ((recvbytes = recv(client_fd, buf, BUFFER_SIZE, 0)) < 0)
         {
             printf("recv\n");

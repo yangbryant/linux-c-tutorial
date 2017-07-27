@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#define PORT 4321
+#define PORT 1234
 #define BUFFER_SIZE 1024
 
 int main(int argc, char *argv[])
