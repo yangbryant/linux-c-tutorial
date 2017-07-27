@@ -1,6 +1,0 @@
-/Users/everyoo/Movies/Code/uart_writer/CMakeFiles/rebuild_cache.dir
-/Users/everyoo/Movies/Code/uart_writer/CMakeFiles/edit_cache.dir
-/Users/everyoo/Movies/Code/uart_writer/CMakeFiles/com_writer.dir
-/Users/everyoo/Movies/Code/uart_writer/set_com_config/CMakeFiles/rebuild_cache.dir
-/Users/everyoo/Movies/Code/uart_writer/set_com_config/CMakeFiles/edit_cache.dir
-/Users/everyoo/Movies/Code/uart_writer/set_com_config/CMakeFiles/set_com_config.dir
