@@ -1,9 +1,9 @@
-#include "broadcast_header.h"
+#include "multicast_header.h"
 
 int main()
 {
     int sockfd;
-    struct sockaddr_in bcastaddr;
+    struct sockaddr_in mcastaddr;
     char buff[BUFF_SIZE];
     int f_isbcast;
     int i;
@@ -23,17 +23,17 @@ int main()
         exit(1);
     }
 
-    // 填充地址结构体
-    bcastaddr.sin_family = AF_INET;
-    bcastaddr.sin_port = htons(BCAST_PORT);
-    bcastaddr.sin_addr.s_addr = inet_addr(BCAST_ADDR);
+    // 填充目标组播地址结构体
+    mcastaddr.sin_family = AF_INET;
+    mcastaddr.sin_port = htons(MCAST_PORT);
+    mcastaddr.sin_addr.s_addr = inet_addr(MCAST_ADDR);
 
     // 一秒一次循环发送广播
     i = 0;
     while (1)
     {
-        sprintf(buff, "this is a broadcast message! --- %d", i++);
-        if (-1 == sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr *)&bcastaddr, sizeof(bcastaddr)))
+        sprintf(buff, "this is a multicast message! --- %d", i++);
+        if (-1 == sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr *)&mcastaddr, sizeof(mcastaddr)))
         {
             printf("sendto error!\n");
             exit(1);
