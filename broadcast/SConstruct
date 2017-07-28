@@ -1,0 +1,2 @@
+Program('receiver', 'receiver.c')
+Program('sender', 'sender.c')
