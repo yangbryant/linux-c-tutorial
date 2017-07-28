@@ -1,0 +1,2 @@
+Program('server', 'net_select.c')
+Program('client', 'client.c')
