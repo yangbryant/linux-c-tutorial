@@ -32,7 +32,7 @@
 #define POLL 4
 #define PREC -6
 
-#define JAN_1970 0x83aa7e80
+#define JAN_1970 0x83aa7e80 // 从1900年~1970年时间的秒数
 #define NTPFRAC(x) (4294 * (x) + ((1980 * (x)) >> 11))
 #define USEC(x) (((x) >> 12) - 759 * ((((x) >> 10) + 32768) >> 16))
 
@@ -76,23 +76,9 @@ int construct_packet(char *packet)
         port = NTP_PORT;
 
         // 设置16字节包头
-        int x = 0;
-        for (; x < 48; x++)
-        {
-            printf("%8x ", packet[x]);
-            if ((x+1)%6 == 0)
-                printf("\n");
-        }
         version = protocol[5] - 0x30;
         tmp_wrd = htonl((LI << 30) | (version << 27) | (MODE << 24) | (STRATUM << 16) | (POLL << 8) | (PREC & 0xff));
         memcpy(packet, &tmp_wrd, sizeof(tmp_wrd));
-        x = 0;
-        for (; x < 48; x++)
-        {
-            printf("%8x ", packet[x]);
-            if ((x+1)%6 == 0)
-                printf("\n");
-        }
 
         // 设置Root Delay, Root Dispersion, Reference Indentifier
         tmp_wrd = htonl(1 << 16);
@@ -103,19 +89,11 @@ int construct_packet(char *packet)
         time(&timer);
         // 设置Transmit Timestamp Coarse
         tmp_wrd = htonl(JAN_1970 + (long)timer);
+        printf("%d\n", tmp_wrd);
         memcpy(&packet[40], &tmp_wrd, sizeof(tmp_wrd));
 
         tmp_wrd = htonl((long)NTPFRAC(timer));
         memcpy(&packet[44], &tmp_wrd, sizeof(tmp_wrd));
-
-        int j = 0;
-        printf("origin:\n");
-        for (; j < 48; j++)
-        {
-            printf("%8x ", packet[j]);
-            if ((j+1)%6 == 0)
-                printf("\n");
-        }
 
         return NTP_PCK_LEN;
     }
@@ -143,6 +121,7 @@ int get_ntp_time(int sk, struct addrinfo *addr, struct ntp_packet *ret_time)
     }
 
     // 客户端给服务器端发送NTP协议数据包
+    // 数据包格式范例: 1b0004fa000100000001000000000000000000000000000000000000000000000000000000000000dd26aaa74f5022d9
     if ((result = sendto(sk, data, packet_len, 0, addr->ai_addr, data_len)) < 0)
     {
         printf("sendto error!\n");
@@ -173,16 +152,8 @@ int get_ntp_time(int sk, struct addrinfo *addr, struct ntp_packet *ret_time)
             return 0;
         }
 
-        int j = 0;
-        printf("result:\n");
-        for (; j < 48; j++)
-        {
-            printf("%8x ", ntohl(data[j]));
-            if ((j+1)%6 == 0)
-                printf("\n");
-        }
-
         // 设置接收NTP协议包的数据结构
+        // 接收包格式范例: 1c0104ec000000000000004847505373dd26aa9ff7e47f4edd26aaa74f5022d9dd26aaa75f6f1524dd26aaa75f716a6a
         ret_time->leap_ver_mode = ntohl(data[0]);
         ret_time->startum = ntohl(data[1]);
         ret_time->poll = ntohl(data[2]);
